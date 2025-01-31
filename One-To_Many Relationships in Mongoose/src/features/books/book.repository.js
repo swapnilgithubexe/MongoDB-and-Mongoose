@@ -19,28 +19,28 @@ export default class BookRepository {
         return savedBook;
     }
 
-    
+
     async getOne(id) {
         const book = await booksModel.findById(id);
         return book;
     }
-    
+
     async listBooksByGenre(genre) {
         const books = await booksModel.find({ genre });
         return books;
     }
-    
+
     async updateBookAvailability(bookId, quantity) {
-        
+
         console.log(bookId);
         const book = await booksModel.findById(bookId);
-        
+
         // Calculate the new availableCopies value
         const newAvailableCopies = book.availableCopies + quantity;
-        
+
         // Update the availableCopies field and save the book
         book.availableCopies = newAvailableCopies;
-        
+
         await book.save();
         return book;
     }
@@ -53,7 +53,26 @@ export default class BookRepository {
     //------------------pre-written code ends--------------------------
 
     // Complete the function below
-    
+
     // adding review to a particular book
-    async addReviewToBook(bookId, text, rating) { }
+    async addReviewToBook(bookId, text, rating) {
+        try {
+            const newBookReview = new reviewModel({
+                text,
+                rating,
+                book: bookId
+            });
+            await newBookReview.save();
+
+            await booksModel.findByIdAndUpdate(
+                bookId, {
+                $push: { reviews: newBookReview._id }
+            },
+                { new: true }
+            );
+            return newBookReview;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
 }

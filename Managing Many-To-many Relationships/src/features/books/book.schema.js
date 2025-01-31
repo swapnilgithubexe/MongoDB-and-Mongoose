@@ -1,5 +1,4 @@
-// No need to change pre-written code
-// Just make changes in reviews
+// Don't change the pre-written code.
 import mongoose from 'mongoose';
 
 export const bookSchema = new mongoose.Schema({
@@ -8,10 +7,12 @@ export const bookSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
-    author: {
-        type: String,
-        required: true,
-    },
+
+    // -----------------modify authors here-----------------
+    authors: [{
+        type: mongoose.Schema.Types.ObjectId, ref: "Authors"
+    }],
+
     genre: {
         type: String,
         required: true,
@@ -27,10 +28,8 @@ export const bookSchema = new mongoose.Schema({
         required: true,
         min: 0,
     },
-    // Modify this section to handle the association with reviews.
     reviews: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Review"
+        ref: 'Review',
     }]
-
 });
